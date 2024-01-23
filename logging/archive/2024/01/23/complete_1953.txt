@@ -1,8 +1,0 @@
-__main__               - 2024-01-23 18:25:12,489 - INFO - ['RH_major', 'neuro_major', 'abdominal_major', 'vascular_major']
-__main__               - 2024-01-23 18:25:12,490 - INFO - Creating ppjDataset/base
-src.data.creators      - 2024-01-23 18:25:12,924 - WARNING - Could not find C:\Users\Andreas\phd\study2\triAIge\data\interim\ppj.csv
-Constructing PPJ dataframe. This might take a while.
-src.data.datasets      - 2024-01-23 18:43:12,066 - INFO - Collected subsets
-src.data.datasets      - 2024-01-23 18:43:12,088 - INFO - Cleaned sequential subsets for outliers
-src.data.datasets      - 2024-01-23 18:43:12,094 - INFO - Sorted subsets
-src.data.datasets      - 2024-01-23 18:43:17,575 - INFO - Added outcomes

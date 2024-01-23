@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 import torch
 from sklearn.metrics import roc_auc_score, roc_curve
 from tsai.all import  Learner
-from tsai.models.TabFusionTransformer import TSTabFusionTransformer
+from tsai.models.TabFusionTransformer import TSTabFusionTransformer, TabFusionTransformer
 from tsai.callback.core import SaveModel, ShowGraphCallback2
 
 from fastai.losses import CrossEntropyLossFlat,BCEWithLogitsLossFlat
@@ -92,6 +92,15 @@ def train_main(cfg:DictConfig):
                                     n_heads = cfg["model"]["n_heads"],
                                     d_model=cfg["model"]["d_model"],
                                     )
+
+    shit_model = TabFusionTransformer(classes = classes, 
+                                 cont_names = f.cont_names, 
+                                 c_out= len(f.target),  # type: ignore
+                                fc_dropout=cfg["model"]["fc_dropout"],
+                                n_layers = cfg["model"]["n_layers"],
+                                n_heads = cfg["model"]["n_heads"],
+                                d_model=cfg["model"]["d_model"],
+                                )
 
     # Note, consider using TSlearner instead https://timeseriesai.github.io/tsai/tslearner.html
     learn = Learner(f.dls, model,

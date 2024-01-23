@@ -497,6 +497,10 @@ class TimeSeriesDataset():
             elif fillmode == "nans":
                 logger.info("padding with float(nan)s")
                 self.long_df.fillna(value=float('nan'), inplace=True)
+            
+            elif fillmode =="pass":
+                logger.info("not filling trailing missings")
+                pass
 
             else: logger.error("unable to trail fill sequentials")
 

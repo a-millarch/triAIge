@@ -1,6 +1,0 @@
-__main__               - 2024-01-23 20:09:02,819 - INFO - ['RH_major', 'neuro_major', 'abdominal_major', 'vascular_major']
-__main__               - 2024-01-23 20:09:02,835 - INFO - Creating ppjDataset/base
-src.data.datasets      - 2024-01-23 20:09:15,035 - INFO - Collected subsets
-src.data.datasets      - 2024-01-23 20:09:15,075 - INFO - Cleaned sequential subsets for outliers
-src.data.datasets      - 2024-01-23 20:09:15,088 - INFO - Sorted subsets
-src.data.datasets      - 2024-01-23 20:09:27,087 - INFO - Added outcomes

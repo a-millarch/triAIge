@@ -7,7 +7,7 @@ target:
 
 
 seed: 422
-verbose: True
+verbose: False
 
 
 patients_info_file_name: patients_info

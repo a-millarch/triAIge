@@ -1,1 +1,0 @@
-__main__               - 2024-01-23 18:20:43,425 - INFO - ['RH_major', 'neuro_major', 'abdominal_major', 'vascular_major']
