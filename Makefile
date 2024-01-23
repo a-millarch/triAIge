@@ -36,8 +36,8 @@ dev_requirements: requirements
 
 ## Delete all compiled Python files
 clean:
-	find . -type f -name "*.py[co]" -delete
-	find . -type d -name "__pycache__" -delete
+	$(PYTHON_INTERPRETER) -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]"
+	$(PYTHON_INTERPRETER) -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
 
 
 #################################################################################
@@ -54,6 +54,11 @@ train:
 #################################################################################
 # Documentation RULES                                                           #
 #################################################################################
+
+## File structure print for readme.md
+tree:
+	make clean
+	tree /f
 
 ## Build documentation
 build_documentation: dev_requirements

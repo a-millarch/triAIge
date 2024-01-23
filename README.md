@@ -35,23 +35,57 @@ The directory structure of the project looks like this:
 │
 ├── tests                <- Test files
 │
-├── src  <- Source code for use in this project.
+├───src
+│   │   predict_model.py
+│   │   train_model.py
+│   │   __init__.py
 │   │
-│   ├── __init__.py      <- Makes folder a Python module
+│   ├───common
+│   │       log_config.py
 │   │
-│   ├── data             <- Scripts to download or generate data
-│   │   ├── __init__.py
-│   │   └── make_dataset.py
+│   ├───custom
+│   │       custom_fusion_model.py
+│   │       tsai_custom.py
 │   │
-│   ├── models           <- model implementations, training script and prediction script
-│   │   ├── __init__.py
-│   │   ├── model.py
+│   ├───data
+│   │   │   creators.py
+│   │   │   datasets.py
+│   │   │   datasets_legacy.py
+│   │   │   list_dumps.py
+│   │   │   make_data.py
+│   │   │   mapping.py
+│   │   │   tools.py
+│   │   │   __init__.py
+│   │   │
+│   │   └───tmp_del
+│   │           1.0-pre-processing.py
+│   │           archive.py
+│   │           dataloader.py
 │   │
-│   ├── visualization    <- Scripts to create exploratory and results oriented visualizations
-│   │   ├── __init__.py
-│   │   └── visualize.py
-│   ├── train_model.py   <- script for training the model
-│   └── predict_model.py <- script for predicting from a model
+│   ├───evaluation
+│   │       metrics.py
+│   │
+│   ├───features
+│   │       fusion.py
+│   │       fusion_legacy.py
+│   │       loader.py
+│   │       __init__.py
+│   │
+│   ├───models
+│   │       fastbinary.py
+│   │       ml_utils.py
+│   │       modelcomponents.py
+│   │       timeseries_classification.py
+│   │       tree_utils.py
+│   │
+│   ├───scripts
+│   │       pre_process.py
+│   │       training.py
+│   │       utils.py
+│   │       __init__,py
+│   │
+│   └───visualization
+│           visualize.py
 │
 └── LICENSE              <- Open-source license if one is chosen
 ```
