@@ -182,4 +182,5 @@ cython_debug/
 /mlruns
 /notebooks
 /outputs
-/repors/figures
+/reports/figures
+/logging
