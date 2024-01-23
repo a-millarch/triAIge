@@ -1,0 +1,10 @@
+__main__               - 2024-01-23 20:19:51,930 - INFO - ['RH_major', 'neuro_major', 'abdominal_major', 'vascular_major']
+__main__               - 2024-01-23 20:19:51,945 - INFO - Creating ppjDataset/base
+src.data.datasets      - 2024-01-23 20:20:04,067 - INFO - Collected subsets
+src.data.datasets      - 2024-01-23 20:20:04,111 - INFO - Cleaned sequential subsets for outliers
+src.data.datasets      - 2024-01-23 20:20:04,123 - INFO - Sorted subsets
+src.data.datasets      - 2024-01-23 20:20:16,475 - INFO - Added outcomes
+src.data.datasets      - 2024-01-23 20:20:24,203 - INFO - Renamed categorical values to natural language
+src.data.datasets      - 2024-01-23 20:20:24,586 - INFO - Identified 0 JournalIDs with sequential data above limit: 500
+src.data.datasets      - 2024-01-23 20:20:24,622 - INFO - Removed 0 journalIDs due to sequences length above limit
+src.data.datasets      - 2024-01-23 20:20:24,630 - INFO - Initialing sequential binning using 30S bins

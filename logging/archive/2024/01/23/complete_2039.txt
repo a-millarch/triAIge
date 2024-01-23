@@ -1,0 +1,13 @@
+__main__               - 2024-01-23 20:33:45,348 - INFO - ['RH_major', 'neuro_major', 'abdominal_major', 'vascular_major']
+__main__               - 2024-01-23 20:33:45,364 - INFO - Creating ppjDataset/base
+src.data.datasets      - 2024-01-23 20:33:57,670 - INFO - Collected subsets
+src.data.datasets      - 2024-01-23 20:33:57,713 - INFO - Cleaned sequential subsets for outliers
+src.data.datasets      - 2024-01-23 20:33:57,727 - INFO - Sorted subsets
+src.data.datasets      - 2024-01-23 20:34:10,077 - INFO - Added outcomes
+src.data.datasets      - 2024-01-23 20:35:04,753 - INFO - Renamed categorical values to natural language
+src.data.datasets      - 2024-01-23 20:35:05,159 - INFO - Identified 0 JournalIDs with sequential data above limit: 500
+src.data.datasets      - 2024-01-23 20:35:05,193 - INFO - Removed 0 journalIDs due to sequences length above limit
+src.data.datasets      - 2024-01-23 20:35:05,201 - INFO - Initialing sequential binning using 30S bins
+src.data.datasets      - 2024-01-23 20:35:06,573 - INFO - creating long df
+src.data.datasets      - 2024-01-23 20:36:47,408 - INFO - padding with float(nan)s
+src.data.datasets      - 2024-01-23 20:36:51,692 - INFO - Dropped 792 entries due to short sequences.

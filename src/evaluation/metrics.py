@@ -147,7 +147,7 @@ def multilabel_roc_pr_analysis_and_plot(learn, target_names:list, dl=None):
     # Show plots
     #plt.tight_layout()
     
-    plt.savefig("../reports/figs/metric_plot.png")
+    plt.savefig("reports/figures/metric_plot.png")
     plt.show()
 
     return roc_auc, pr_auc

@@ -350,6 +350,11 @@ class TimeSeriesDataset():
             self.base = ppjDataset()
 
         self.target =target
+        if isinstance(target, str):
+            self.multilabel = False
+        else:
+            self.multilabel = True
+
         self.patients_info = self.base.patients_info.copy(deep=True)
         self.cfg = cfg
 
@@ -429,8 +434,8 @@ class TimeSeriesDataset():
         self.df = final_df 
         logger.debug("self.df set")
 
-        if isinstance(self.target, list):
-            self.df = self.df.merge(self.patients_info[["JournalID",]+ self.target], how='left', on = "JournalID")
+        if self.multilabel:
+            self.df = self.df.merge(self.patients_info[["JournalID",]+ self.target], how='left', on = "JournalID") #type: ignore
         else:
             self.df = self.df.merge(self.patients_info[["JournalID", self.target]], how='left', on = "JournalID")
   #  def construct_features(self, bin_freq):
@@ -458,8 +463,8 @@ class TimeSeriesDataset():
         self.patient_map = df[["sample", "JournalID"]].copy(deep=True)
         self.patient_map = self.patient_map.drop_duplicates().reset_index(drop=True)
         del df["JournalID"]
-        if isinstance(self.target, list):
-            self.y_df = df[["sample",] +self.target].drop_duplicates()
+        if self.multilabel:
+            self.y_df = df[["sample",] +self.target].drop_duplicates() #type: ignore
         else:
             self.y_df = df[["sample", self.target]].drop_duplicates()
         #self.y_df[self.y_df["sample"].duplicated(keep=False)]
@@ -506,7 +511,7 @@ class TimeSeriesDataset():
 # fix later    
     def __ldf_samples_to_undersample__(self,frac):
         """ assumes "_major" in target... """
-        if isinstance(self.target, list):
+        if self.multilabel:
             df = self.long_df[self.target + ["sample"]].drop_duplicates() # type: ignore
             # Determine if any of the 'target' columns is equal to 1
             mask = (df.filter(like='_major') == 0).all(axis=1)
@@ -526,7 +531,7 @@ class TimeSeriesDataset():
             self.long_df = self.long_df.iloc[:,:cutoff_col_idx+3]
 
             # some samples have duplicates where target is both 0 and 1. Keep where 1
-            if isinstance(self.target, list):
+            if self.multilabel:
                 pass #probably still needs handling though
             else:
                 self.y_df = self.y_df.sort_values(by=["sample", self.target]).drop_duplicates(subset="sample", keep="last")
@@ -543,13 +548,12 @@ class TimeSeriesDataset():
                 self.long_df = self.long_df[~self.long_df["sample"].isin(drop_samples)]
 
             elif isinstance(undersampling, float) and undersampling >0.0:
-                if isinstance(self.target, str):
-                    drop_samples = self.long_df[(self.long_df[self.target]<1)].sample(frac=undersampling, random_state=42)["sample"].unique()
-                elif isinstance(self.target, list):
-
-                    drop_samples = self.__ldf_samples_to_undersample__(frac = undersampling)
-                else: return logger.error("Unable to undersample, target type error") 
             
+                if self.multilabel:
+                    drop_samples = self.__ldf_samples_to_undersample__(frac = undersampling)
+                else :
+                    drop_samples = self.long_df[(self.long_df[self.target]<1)].sample(frac=undersampling, random_state=42)["sample"].unique()
+         
                 self.long_df = self.long_df[~self.long_df["sample"].isin(drop_samples)]#type:ignore
                 logger.info(f"Undersampled negative class by N={len(drop_samples)} | frac={undersampling}")#type:ignore
 

@@ -5,6 +5,7 @@ from datetime import datetime
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from rich.logging import RichHandler
 
 p = Path(__file__).parents[2]
 
@@ -18,7 +19,8 @@ default_log_file_path = 'logging/app.log'
 archive_folder = p.joinpath(f'logging/archive/{current_year}/{current_month}/{current_day}/')
 
 def setup_logging():
-    if not logging.getLogger().hasHandlers():
+ #   if not logging.getLogger().hasHandlers():
+        
         formatter = logging.Formatter('%(name)-22s - %(asctime)s - %(levelname)s - %(message)s')
         handler = RotatingFileHandler(p.joinpath(default_log_file_path))
         handler.setFormatter(formatter)
@@ -27,6 +29,7 @@ def setup_logging():
 # change level here for now
         logger.setLevel(logging.INFO)
         logger.addHandler(handler)
+        logger.root.handlers[0] = RichHandler(markup=True)
 
         # for some reason matplotlib is annoying in notebooks when level==debug. Disable
         logging.getLogger('matplotlib.font_manager').disabled = True

@@ -1,0 +1,29 @@
+
+target: 
+  - RH_major 
+  - neuro_major
+  - abdominal_major
+  - vascular_major
+
+
+seed: 422
+verbose: True
+
+
+patients_info_file_name: patients_info
+ppj_file_name: ppj
+base_file_name: 
+
+outcome_creation_mode: "categorical_procedure"
+cut_off_col_idx: 50
+bin_freq: "30S"
+undersampling: 0.0
+sequential_fillna_mode: zero
+
+upper_seq_limit: 500
+
+valid_size: 0.2
+test_size: 0.1
+
+
+bs: 256

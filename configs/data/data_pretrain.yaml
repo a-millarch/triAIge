@@ -1,0 +1,25 @@
+common:
+  target: neuro
+  seed: 422
+  verbose: True
+
+data:
+  patients_info_file_name: pretrain_patients_info
+  ppj_file_name: pretrain_ppj
+  
+  base_file_name: 
+
+  outcome_creation_mode: "categorical_procedure"
+  cut_off_col_idx: 20
+  bin_freq: "30S"
+  undersampling: 0.0
+  sequential_fillna_mode: zero
+
+  upper_seq_limit: 100
+
+preproces:
+  valid_size: 0.2
+  test_size: 0.1
+
+dls:
+  bs: 256

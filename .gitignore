@@ -176,5 +176,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# data
+# data, models, run logs
 /data
+/models
+/mlruns
+/notebooks
+/outputs
+/repors/figures

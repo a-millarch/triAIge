@@ -1,0 +1,12 @@
+__main__               - 2024-01-23 18:05:08,709 - INFO - Creating ppjDataset/base
+__main__               - 2024-01-23 18:05:25,840 - INFO - Creating ppjDataset/base
+src.data.creators      - 2024-01-23 18:05:26,105 - ERROR - Could not find c:\Users\Andreas\phd\study2\triAIge\notebooks\..\data\interim\patients_info.csv
+Constructing patients info dataframe. This might take a while.
+__main__               - 2024-01-23 18:05:39,435 - INFO - Creating ppjDataset/base
+src.data.creators      - 2024-01-23 18:05:39,645 - ERROR - Could not find c:\Users\Andreas\phd\study2\triAIge\notebooks\..\data\interim\patients_info.csv
+Constructing patients info dataframe. This might take a while.
+__main__               - 2024-01-23 18:06:17,100 - INFO - Creating ppjDataset/base
+src.data.creators      - 2024-01-23 18:06:17,350 - ERROR - Could not find c:\Users\Andreas\phd\study2\triAIge\notebooks\..\data\interim\patients_info.csv
+Constructing patients info dataframe. This might take a while.
+src.data.creators      - 2024-01-23 18:06:50,417 - ERROR - Could not find c:\Users\Andreas\phd\study2\triAIge\notebooks\..\data\interim\ppj.csv
+Constructing PPJ dataframe. This might take a while.

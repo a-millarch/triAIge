@@ -17,7 +17,7 @@ from tsai.all import TensorMultiCategory
 
 from fastai.data.transforms import Categorize
 from fastai.tabular.core import Categorify, FillMissing, Normalize
-
+from omegaconf import OmegaConf
 
 from pathlib import Path
 p = Path(__file__).parents[2]
@@ -43,27 +43,33 @@ class FusionLoader():
         """ instantiate from config file """
         
         self.cfg = cfg    
-        self.v = cfg["common"]["verbose"]
+        self.v = cfg["verbose"]
 
         if target:
             self.target = target
         else:
-            self.target = cfg["common"]["target"]
+            self.target = cfg["target"]
+            self.target = OmegaConf.to_object(self.target)
+
+        if isinstance(self.target, str):
+            self.multilabel = False
+        else:
+            self.multilabel = True 
 
         if base:
             self.base = base
         else:
             logger.info("No base file, collecting")
-            self.collect_base(patients_info_file_name= cfg["data"]["patients_info_file_name"],
-                                ppj_file_name= cfg["data"]["ppj_file_name"])
+            self.collect_base(patients_info_file_name= cfg["patients_info_file_name"],
+                                ppj_file_name= cfg["ppj_file_name"])
             
         self.get_dfs(   self.target, 
-                        outcome_creation_mode = cfg["data"]["outcome_creation_mode"], 
-                        cut_off_col_idx = cfg["data"]["cut_off_col_idx"],
-                        bin_freq= cfg["data"]["bin_freq"],  # type: ignore
-                        fillmode=  cfg["data"]["sequential_fillna_mode"],
-                        undersampling = cfg["data"]["undersampling"],
-                        upper_seq_limit = cfg["data"]["upper_seq_limit"])
+                        outcome_creation_mode = cfg["outcome_creation_mode"], 
+                        cut_off_col_idx = cfg["cut_off_col_idx"],
+                        bin_freq= cfg["bin_freq"],  # type: ignore
+                        fillmode=  cfg["sequential_fillna_mode"],
+                        undersampling = cfg["undersampling"],
+                        upper_seq_limit = cfg["upper_seq_limit"])
         
         self.get_splits_from_dfs()
         self.get_dls()
@@ -127,7 +133,7 @@ class FusionLoader():
         #cat_names = ds_tab.base.cat_names
         cont_names = keep_cont_cols 
 
-        if isinstance(target, list):
+        if self.multilabel:
             keep_cols = ["JournalID",] +target + cat_names+  cont_names
         else:
             keep_cols = ["JournalID", target] + cat_names+  cont_names
@@ -156,7 +162,7 @@ class FusionLoader():
         ldf = ldf[ldf["sample"].isin(tab_df["sample"].unique())]
         logger.info(f"Tabular dataset length after reducing: {len(tab_df)}")
 
-        if isinstance(self.target, list):
+        if self.multilabel:
             def y_func(o): return o
             target_col_len = len(target)
         else:
@@ -168,7 +174,7 @@ class FusionLoader():
                                y_func=y_func)
         
         # if a list, overwrite the y with my own structure
-        if isinstance(self.target, list):
+        if self.multilabel:
             logger.info("Replacing fusion.y")
             self.y = ldf.drop_duplicates(subset="sample")[self.target].values.tolist() 
         else: pass
@@ -186,11 +192,11 @@ class FusionLoader():
         """ uses TSAI lib get_splits and set train/val splits and test splits
         """
         target = self.target
-        if isinstance(self.target, list):
-            ts_splits = get_splits(np.array([l[0] for l in self.y]) , valid_size=self.cfg["preproces"]["valid_size"], test_size=self.cfg["preproces"]["test_size"]  ,stratify=True, random_state=self.cfg["common"]["seed"], shuffle=True, check_splits= True, show_plot=self.v)
+        if self.multilabel:
+            ts_splits = get_splits(np.array([l[0] for l in self.y]) , valid_size=self.cfg["valid_size"], test_size=self.cfg["test_size"]  ,stratify=True, random_state=self.cfg["seed"], shuffle=True, check_splits= True, show_plot=self.v)
 
         else:
-            ts_splits = get_splits(self.y, valid_size=self.cfg["preproces"]["valid_size"], test_size=self.cfg["preproces"]["test_size"]  ,stratify=True, random_state=self.cfg["common"]["seed"], shuffle=True, check_splits= True, show_plot=self.v)
+            ts_splits = get_splits(self.y, valid_size=self.cfg["valid_size"], test_size=self.cfg["test_size"]  ,stratify=True, random_state=self.cfg["seed"], shuffle=True, check_splits= True, show_plot=self.v)
 
         logger.info(f"{len(self.full_tab_df['sample'].unique())} trajectories in total with {self.full_tab_df[target].sum()} positive outcomes")
         
@@ -218,7 +224,7 @@ class FusionLoader():
                                   y_names= self.target, 
                                   splits= self.splits)
         
-        if isinstance(self.target, list):
+        if self.multilabel:
             tfms  = [None, CustomTSMultiLabelClassification()]
             #tfms  = [None, TSMultiLabelClassification()] # TSMultiLabelClassification() == [MultiCategorize(), OneHotEncode()]        
         else:
@@ -230,7 +236,7 @@ class FusionLoader():
 
         ts_dls = get_ts_dls(self.X, self.y, splits=self.splits, tfms=tfms, batch_tfms=batch_tfms)
 
-        mixed_dls = get_mixed_dls( ts_dls, tab_dls, bs=self.cfg["dls"]["bs"])
+        mixed_dls = get_mixed_dls( ts_dls, tab_dls, bs=self.cfg["bs"])
         #if self.v:
         #    mixed_dls.show_batch()
 
@@ -254,7 +260,7 @@ class FusionLoader():
         
                 # ts dataloader
                 
-        if isinstance(self.target, list):
+        if self.multilabel:
             tfms  = [None, CustomTSMultiLabelClassification()]     
         else:
             tfms  = [None, [Categorize()]]

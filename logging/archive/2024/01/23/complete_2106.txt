@@ -1,0 +1,22 @@
+__main__               - 2024-01-23 21:04:14,573 - INFO - ['RH_major', 'neuro_major', 'abdominal_major', 'vascular_major']
+__main__               - 2024-01-23 21:04:14,578 - INFO - Creating ppjDataset/base
+src.data.datasets      - 2024-01-23 21:04:25,648 - INFO - Collected subsets
+src.data.datasets      - 2024-01-23 21:04:25,683 - INFO - Cleaned sequential subsets for outliers
+src.data.datasets      - 2024-01-23 21:04:25,689 - INFO - Sorted subsets
+src.data.datasets      - 2024-01-23 21:04:31,188 - INFO - Added outcomes
+src.data.datasets      - 2024-01-23 21:04:31,299 - INFO - Renamed categorical values to natural language
+src.data.datasets      - 2024-01-23 21:04:31,619 - INFO - Identified 0 JournalIDs with sequential data above limit: 500
+src.data.datasets      - 2024-01-23 21:04:31,646 - INFO - Removed 0 journalIDs due to sequences length above limit
+src.data.datasets      - 2024-01-23 21:04:31,651 - INFO - Initialing sequential binning using 30S bins
+src.data.datasets      - 2024-01-23 21:04:32,672 - INFO - creating long df
+src.data.datasets      - 2024-01-23 21:04:34,816 - INFO - padding with zeroes
+src.data.datasets      - 2024-01-23 21:04:34,896 - INFO - Dropped 792 entries due to short sequences.
+src.features.fusion    - 2024-01-23 21:04:34,932 - INFO - Tabular dataset length before reducing: 6350
+src.features.fusion    - 2024-01-23 21:04:34,946 - INFO - Tabular dataset length after reducing: 4735
+src.features.fusion    - 2024-01-23 21:04:35,517 - INFO - Replacing fusion.y
+src.features.fusion    - 2024-01-23 21:06:08,934 - INFO - 4735 trajectories in total with RH_major           116
+neuro_major        146
+abdominal_major    107
+vascular_major      40
+dtype: int64 positive outcomes
+__main__               - 2024-01-23 21:06:11,250 - INFO - Using class weights: tensor([2.0409, 1.6216, 2.2126, 5.9188])

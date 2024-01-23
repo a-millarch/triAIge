@@ -25,6 +25,10 @@ requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 	$(PYTHON_INTERPRETER) -m pip install -e .
+	
+# Instal local project as package
+local:
+	$(PYTHON_INTERPRETER) -m pip install -e .
 
 ## Install Developer Python Dependencies
 dev_requirements: requirements
@@ -42,8 +46,11 @@ clean:
 
 ## Process raw data into processed data
 data:
-	python $(PROJECT_NAME)/data/make_dataset.py
+	python $(PROJECT_NAME)/data/make_data.py
 
+## Process raw data into processed data
+train:
+	python $(PROJECT_NAME)/train_model.py
 #################################################################################
 # Documentation RULES                                                           #
 #################################################################################

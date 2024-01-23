@@ -1,0 +1,15 @@
+
+fc_dropout: 0.3
+n_layers: 6
+n_heads: 8
+
+d_model: 64
+d_k: None
+d_v: None
+d_ff: None
+
+
+n_epochs: 50
+
+weights: True 
+weights_factor: 0.1

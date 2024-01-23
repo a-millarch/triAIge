@@ -94,7 +94,7 @@ def process_patients_info(file_name ="patients_info"):
         patients_info = pd.read_csv(file_path, encoding="utf-8", sep=";")
         logger.debug(f"Succesfully loaded patients info file from {file_path}")
     except:
-        logger.error(f'Could not find {file_path}\nConstructing patients info dataframe. This might take a while.')
+        logger.warning(f'Could not find {file_path}\nConstructing patients info dataframe. This might take a while.')
         patients_info = construct_patients_info_df_sp()
         patients_info.to_csv(p.joinpath("data/interim/", file_name+".csv"), encoding="utf-8", sep=";")
        
@@ -106,7 +106,7 @@ def process_ppj(file_name ="ppj"):
         ppj = pd.read_csv(p.joinpath(file_path), encoding="utf-8", sep=";")
         logger.debug(f"Succesfully loaded PPJ file from {file_path}")
     except:
-        logger.error(f'Could not find {file_path}\nConstructing PPJ dataframe. This might take a while.')
+        logger.warning(f'Could not find {file_path}\nConstructing PPJ dataframe. This might take a while.')
         ppj = construct_ppj_collection()
         ppj.to_csv(p.joinpath("data/interim/", file_name+".csv"),  encoding="utf-8", sep=";")
     return ppj
