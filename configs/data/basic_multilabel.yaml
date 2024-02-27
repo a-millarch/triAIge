@@ -1,14 +1,11 @@
-
 target: 
   - RH_plus_major 
   - neuro_major
   - abdominal_major
   - vascular_major
 
-
 seed: 422
 verbose: False
-
 
 patients_info_file_name: patients_info
 ppj_file_name: ppj
@@ -24,6 +21,5 @@ upper_seq_limit: 500
 
 valid_size: 0.2
 test_size: 0.1
-
 
 bs: 256

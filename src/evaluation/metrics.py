@@ -135,7 +135,7 @@ def multilabel_roc_pr_analysis_and_plot(learn, target_names:list, dl=None):
 
     # Add diagonal line to ROC plot (random classifier)
     ax_roc.plot([0, 1], [0, 1], 'k--', label='Random' ,c ="darkgray")
-    ax_pr.plot([0, 1], [0.05, 0.05], 'k--', label='Average (P/N)',c ="darkgray")
+    #ax_pr.plot([0, 1], [0.05, 0.05], 'k--', label='Average (P/N)',c ="darkgray")
 
     ax_roc.grid(True)
     ax_pr.grid(True)
