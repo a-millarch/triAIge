@@ -1,6 +1,6 @@
 
 target: 
-  - RH_major 
+  - RH_plus_major 
   - neuro_major
   - abdominal_major
   - vascular_major
@@ -15,7 +15,7 @@ ppj_file_name: ppj
 base_file_name: 
 
 outcome_creation_mode: "categorical_procedure"
-cut_off_col_idx: 50
+cut_off_col_idx: 25
 bin_freq: "30S"
 undersampling: 0.0
 sequential_fillna_mode: zero

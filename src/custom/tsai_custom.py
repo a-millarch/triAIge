@@ -1,4 +1,16 @@
 from tsai.all import TensorMultiCategory, Categorize, BCEWithLogitsLossFlat
+from fastai.callback.all import *
+from fastcore.foundation import L 
+
+def save_loss_plot(learn, save_path:str):
+	skip_start = 5
+	plt.plot(list(range(skip_start, len(learn.recorder.losses))), learn.recorder.losses[skip_start:], label='train')
+	idx = (np.array(learn.recorder.iters)<skip_start).sum()
+	valid_col = learn.recorder.metric_names.index('valid_loss') - 1 
+	plt.plot(learn.recorder.iters[idx:], L(learn.recorder.values[idx:]).itemgot(valid_col), label='valid')
+	plt.legend()
+	plt.savefig(save_path)
+
 
 class CustomTSMultiLabelClassification(Categorize):
     "Reversible combined transform of multi-category strings to one-hot encoded `vocab` id"

@@ -336,8 +336,7 @@ class TabularDataset():
                 export_path = "data/processed/df.csv"
                 self.df.to_csv(p.joinpath(export_path))
             except:
-                pass
-     
+                pass  
 class TimeSeriesDataset():
     """
     to do: create feature dict and target dict in parent class"""

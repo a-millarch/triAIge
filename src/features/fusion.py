@@ -147,7 +147,8 @@ class FusionLoader():
         logger.info(f"Tabular dataset length before reducing: {len(tab_df)}")
  # HACKY SHIT
         tab_df.loc[0, self.cont_names+ self.cat_names] = np.nan
-        tab_df = tab_df[(tab_df.age.notnull()) &  (tab_df.Køn.notnull())]
+        tab_df = tab_df[(tab_df.age.notnull())& (tab_df.age.between(3,90, inclusive="both")) &  (tab_df.Køn.notnull())]
+        #tab_df = tab_df[(tab_df.age.notnull())&  (tab_df.Køn.notnull())]
 # END
 
         # reduce patient mapping and merge
