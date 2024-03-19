@@ -152,8 +152,6 @@ def multilabel_roc_pr_analysis_and_plot(learn, target_names:list, dl=None):
 
     return roc_auc, pr_auc
 
-
-
 def get_metrics( learn, f, plot=True):
     y_preds, ys = learn.get_preds()
     test_y_preds, test_ys = learn.get_preds(dl=f.test_mixed_dls.valid)

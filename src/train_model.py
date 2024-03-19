@@ -12,7 +12,7 @@ import torch
 from sklearn.metrics import roc_auc_score, roc_curve
 from tsai.all import  Learner
 from tsai.models.TabFusionTransformer import TSTabFusionTransformer, TabFusionTransformer
-from tsai.callback.core import SaveModel, ShowGraphCallback2
+from tsai.callback.core import SaveModel, ShowGraphCallback2, EarlyStoppingCallback
 
 from fastai.losses import CrossEntropyLossFlat,BCEWithLogitsLossFlat
 from fastai.metrics import RocAucBinary,RocAucMulti, APScoreMulti
@@ -97,10 +97,14 @@ def train_main(cfg:DictConfig):
                                 d_model=cfg["model"]["d_model"],
                                 )
     # Create learner
+    #escb = EarlyStoppingCallback(monitor='valid_loss', patience=3)
+    smcb =SaveModel(monitor="valid_loss", fname = "model", 
+                                   every_epoch=False, at_end=False, with_opt=False, reset_on_fit=True,comp=None)
+
     learn = Learner(f.dls, model,
                     loss_func =  loss_func,
                     metrics=[RocAucMulti(average='macro'), RocAucMulti(average=None)], #type: ignore
-                    cbs=[SaveModel(monitor="valid_loss", fname = "model")]
+                    cbs=[smcb]
                         )
     # set learning rate from fastai lr-finder by hpm factor (most often reduced)
     lr = learn.lr_find(show_plot=False).valley * cfg["model"]["lr_factor"]
@@ -111,7 +115,7 @@ def train_main(cfg:DictConfig):
         start = time.time()
         
         learn.fit_one_cycle(cfg["model"]["n_epochs"], lr_max=lr)
-        
+        learn.export("models/trained_model_learner.pkl")
         # logging
         elapsed = time.time() - start
         logger.info(f'Elapsed time: {elapsed}')
@@ -151,6 +155,7 @@ def train_main(cfg:DictConfig):
         mlflow.log_artifact('reports/figures/metric_plot.png')
         mlflow.log_artifact("reports/figures/loss_plot.png")
         mlflow.log_artifact("models/model.pth")
+        mlflow.log_artifact("models/trained_model_learner.pkl")
     
 if __name__=="__main__":
     train_main()

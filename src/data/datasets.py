@@ -28,7 +28,7 @@ class ppjDataset():
         
         self.max_na = max_na
         self.subset = {}
-        self.event_descriptions, self.subset_dict = create_subset_mapping()
+        self.event_descriptions, self.subset_dict = create_subset_mapping() # type: ignore
         self.sks_labels = sks_labels
 
         if limit_cats:

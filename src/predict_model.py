@@ -1,17 +1,74 @@
+import sys
+import time
+import logging
+import importlib
+import copy
+
+import numpy as np 
+import pandas as pd
+from matplotlib import pyplot as plt
+
 import torch
+from sklearn.metrics import roc_auc_score, roc_curve
+from tsai.all import  Learner
+from tsai.models.TabFusionTransformer import TSTabFusionTransformer, TabFusionTransformer
+from tsai.callback.core import SaveModel, ShowGraphCallback2
 
-def predict(
-    model: torch.nn.Module,
-    dataloader: torch.utils.data.DataLoader
-) -> None:
-    """Run prediction for a given model and dataloader.
-    
-    Args:
-        model: model to use for prediction
-        dataloader: dataloader with batches
-    
-    Returns
-        Tensor of shape [N, d] where N is the number of samples and d is the output dimension of the model
+from fastai.losses import CrossEntropyLossFlat,BCEWithLogitsLossFlat
+from fastai.metrics import RocAucBinary,RocAucMulti, APScoreMulti
 
-    """
-    return torch.cat([model(batch) for batch in dataloader], 0)
+import mlflow
+from mlflow import MlflowClient
+
+sys.path.append("..")
+import src
+from src.data.datasets import ppjDataset
+from src.features.fusion import FusionLoader
+from src.visualization.visualize import plot_evaluation
+from src.models.ml_utils import get_class_weights
+from src.models.modelcomponents import FocalLoss
+from src.scripts.utils import load_configs, log_configs
+from src.evaluation.metrics import get_metrics, multilabel_roc_analysis_and_plot, multilabel_roc_pr_analysis_and_plot
+from src.custom.tsai_custom import TrainingShowGraph, save_loss_plot
+#from src.custom.custom_fusion_model import *
+
+import hydra
+from omegaconf import DictConfig
+
+from src.common.log_config import setup_logging, clear_log
+
+
+
+from tsai.inference import load_learner
+
+@hydra.main(version_base=None, config_path="../configs", config_name="default.yaml")
+def save_preds(cfg:DictConfig):
+    setup_logging()
+    logger = logging.getLogger(__name__)
+    clear_log()
+
+    learn = load_learner("models/trained_model_learner.pkl")
+    logger.info("loaded trained model in learner object")
+
+    base = ppjDataset(default_mode= False, max_na=0.9)
+    base.collect_base_datasets(patients_info_file_name= cfg.data["patients_info_file_name"],
+                                    ppj_file_name= cfg.data["ppj_file_name"])
+
+    base.collect_subsets()
+    base.clean_sequentials()
+    base.sort_subsets()
+    base.add_outcome()
+
+    f = FusionLoader()
+    f.from_cfg(cfg.data, base=copy.deepcopy(base))
+
+    preds, ys = learn.get_preds(dl=f.test_mixed_dls.valid)
+
+    df = f.test_tab_dls.valid.xs
+    logger.debug(f"length of preds: {len(preds)},\nlength of test_tab: {len(df)}")
+    df[['pred_RH', 'pred_neuro', 'pred_abd', 'pred_vasc']] = preds
+    df[['y_RH', 'y_neuro', 'y_abd', 'y_vasc']] = ys
+    df.to_pickle("data/processed/test_df_preds.pkl")
+
+if __name__=="__main__":
+    save_preds()
