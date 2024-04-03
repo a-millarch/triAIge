@@ -70,7 +70,8 @@ class FusionLoader():
                         fillmode=  cfg["sequential_fillna_mode"],
                         undersampling = cfg["undersampling"],
                         upper_seq_limit = cfg["upper_seq_limit"],
-                        dtd_keep_colnames = cfg["dtd_keep_colnames"])
+                        dtd_keep_colnames = cfg["dtd_keep_colnames"],
+                        min_seq_len = cfg["min_seq_len"])
         
         self.get_splits_from_dfs()
         self.get_dls()
@@ -102,7 +103,8 @@ class FusionLoader():
                 fillmode ="mean",
                 undersampling=0.3,
                 upper_seq_limit = 100,
-                dtd_keep_colnames = None
+                dtd_keep_colnames = None,
+                min_seq_len = 5,
                 ):
         
         """ Collect timeseriesdataset obj and tabulardataset object"""
@@ -117,7 +119,8 @@ class FusionLoader():
                    undersampling=undersampling, 
                    bin_freq=bin_freq, 
                    fillmode = fillmode,
-                   upper_seq_limit = upper_seq_limit)
+                   upper_seq_limit = upper_seq_limit,
+                   min_seq_len = min_seq_len)
 
         # Keep lowest GCS value, drop duplicates
         tmp_GCS = ds_tab.base.subset_numericals["GCS"].sort_values(by=["JournalID", "Value"], ascending=True).drop_duplicates(subset="JournalID",keep='first') # type: ignore
@@ -135,7 +138,6 @@ class FusionLoader():
 
         # DTD
         if dtd_keep_colnames is not None:
-            
             # Collect DTD and filter by categories of column names
             dtd = DTD()
             dtd_df = dtd.get_by_colnames(dtd_keep_colnames) #type: ignore 
@@ -171,6 +173,8 @@ class FusionLoader():
         self.cat_names = cat_names.copy()
 
         # reduce df
+# REDUCING TIME HERE
+        ds_tab.df = ds_tab.df[pd.to_datetime(ds_tab.df.ServiceDate).dt.year > 2016]       
         tab_df = ds_tab.df[ keep_cols].copy(deep=True)
         logger.debug(f"columns: {tab_df.columns}")
         tab_df.drop_duplicates(inplace=True)
@@ -178,6 +182,7 @@ class FusionLoader():
  # HACKY SHIT
         tab_df.loc[0, self.cont_names+ self.cat_names] = np.nan
         tab_df = tab_df[(tab_df.age.notnull())& (tab_df.age.between(3,90, inclusive="both")) &  (tab_df.Køn.notnull())]
+        #tab_df = tab_df[tab_df.]
         #tab_df = tab_df[(tab_df.age.notnull())&  (tab_df.Køn.notnull())]
 # END
 

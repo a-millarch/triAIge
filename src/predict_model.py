@@ -181,7 +181,7 @@ def evaluate_preds(mode = cfg["evaluation"].mode, beta=cfg["evaluation"].beta):
         logger.info(f'{y: <25}: {test_df[y].sum()}')
         logger.info(f'{p: <25}: {test_df[p+"_binary"].sum()}\n')
 
-    plot_outcome_names = ["RH_plus_major" , "neuro_major","abdominal_major" ,"vascular_major"]
+    plot_outcome_names = cfg["data"].target
 
     logger.info(f"all outcomes N={len(new_df)}")
     plot_confusion_matrices(new_df, plot_outcome_names)

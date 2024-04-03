@@ -85,6 +85,7 @@ def train_main(cfg:DictConfig):
                                     n_layers = cfg["model"]["n_layers"],
                                     n_heads = cfg["model"]["n_heads"],
                                     d_model=cfg["model"]["d_model"],
+                                    res_dropout = cfg["model"]["res_dropout"]
                                     )
     # if d_k, d_v, d_ff == None, then derived from d_model and n_heads
 

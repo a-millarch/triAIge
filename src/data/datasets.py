@@ -411,7 +411,7 @@ class TimeSeriesDataset():
 
 # Careful here, might fuck with IDS 
         # Fill NaN values forward within the series
-        final_df = final_df.fillna(method="ffill")
+        final_df = final_df.fillna(method="ffill") #type: ignore
 
         logger.debug("creating timesteps")
         final_df['timestep'] = final_df.groupby(['JournalID'])['CreationTime'].rank(method='dense') \
@@ -477,14 +477,14 @@ class TimeSeriesDataset():
             #display(self.mp.head(30))
 
 # fill trail missing
-    def trailing_fill(self, fillmode = "zero"):
+    def trailing_fill(self, fillmode = "zero", limit = 5):
             if fillmode == "zero":
                 logger.info("padding with zeroes")
                 self.long_df.fillna(0, inplace=True)
 
             elif fillmode == "ffill":
                 logger.info("padding with forward fill")
-                self.long_df.fillna(method= 'ffill', inplace=True)
+                self.long_df.fillna(method= 'ffill', inplace=True) #type: ignore
 
             elif fillmode == "nans":
                 logger.info("padding with float(nan)s")
@@ -493,6 +493,17 @@ class TimeSeriesDataset():
             elif fillmode =="pass":
                 logger.info("not filling trailing missings")
                 pass
+            
+            elif fillmode =="inf":
+                logger.info("padding with -inf")
+                self.long_df.fillna(value=float('-inf'), inplace=True)
+            
+            elif fillmode == "drop":
+                pre_len = len(self.long_df["sample"].unique())
+                self.long_df.fillna(0, inplace=True)
+                drop_ids = self.long_df[(self.long_df[limit] == 0) | (self.long_df[limit].isnull()) ]["sample"].unique()
+                self.long_df = self.long_df[~self.long_df["sample"].isin(drop_ids)].reset_index(drop=True)
+                logger.info(f"drop incomplete sequences. From {pre_len} samples to {len(self.long_df['sample'].unique())}")
 
             else: logger.error("unable to trail fill sequentials")
 
@@ -553,6 +564,7 @@ class TimeSeriesDataset():
                 self.long_df = self.long_df[~self.long_df["sample"].isin(drop_samples)]#type:ignore
                 logger.info(f"Undersampled negative class by N={len(drop_samples)} | frac={undersampling}")#type:ignore
 
+
             else: pass
 
         except: 
@@ -566,14 +578,15 @@ class TimeSeriesDataset():
                 undersampling =None, 
                 fillmode = "trailingzero", 
                 upper_seq_limit=100,
+                min_seq_len = 5,
                 **kwargs ):
         self.specify_sequential_features()
         self.reduce_population_by_sequential_length(upper_seq_limit=upper_seq_limit)
 
         self.construct_df(**kwargs) # bins, transform to long, creates missing overview (self.mp)
 
-        self.trailing_fill(fillmode= fillmode)
-        self.remove_short_sequences(limit = 5)
+        self.trailing_fill(fillmode= fillmode, limit =cutoff_col_idx)
+        self.remove_short_sequences(limit = min_seq_len)
         self.cut(cutoff_col_idx, undersampling= undersampling)
 
 class DTD():
