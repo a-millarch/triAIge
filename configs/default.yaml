@@ -2,3 +2,4 @@ defaults:
     - data: basic_multilabel
     - model: tabfusion
     - experiment: experiment
+    - evaluation: eval

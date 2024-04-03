@@ -1,8 +1,6 @@
-
 from sklearn.metrics import roc_auc_score, roc_curve, f1_score, fbeta_score
 from src.visualization.visualize import plot_evaluation
 import mlflow
-
 
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_curve, auc, average_precision_score

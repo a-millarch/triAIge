@@ -158,3 +158,8 @@ def add_calendar_cols(df, dt_col_name):
     df["Year"] = df[dt_col_name].dt.year
     df["Month"] = df[dt_col_name].dt.month
     df["Day"] = df[dt_col_name].dt.day
+
+def get_csv(path):
+    path = p.joinpath(path)
+    return pd.read_csv(path)
+    

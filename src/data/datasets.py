@@ -3,9 +3,9 @@ import numpy as np
 from IPython.display import display
 import copy 
 
-from src.data.creators import create_subset_mapping, process_patients_info, process_ppj
+from src.data.creators import create_subset_mapping, process_patients_info, process_ppj, get_csv
 from src.data.tools import transposed_df, show_missing_per_col, find_columns_with_word
-from src.data.list_dumps import pt_1, pt_2, pt_3
+#from src.data.list_dumps import pt_1, pt_2, pt_3
 from src.features.loader import ABCD, sks_labels
 
 from pathlib import Path
@@ -154,14 +154,7 @@ class ppjDataset():
     def add_outcome(self, outcome_mode:str = "categorical_procedure"):
         
         if outcome_mode == "TRANSFUSION":
-            self.patients_info.loc[self.patients_info.JournalID.isin(pt_1), "TRANSFUSION_1H"] = 1
-            self.patients_info["TRANSFUSION_1H"].fillna(0, inplace=True)
-
-            self.patients_info.loc[self.patients_info.JournalID.isin(pt_2), "TRANSFUSION_2H"] = 1
-            self.patients_info["TRANSFUSION_2H"].fillna(0, inplace=True)
-
-            self.patients_info.loc[self.patients_info.JournalID.isin(pt_3), "TRANSFUSION_3H"] = 1
-            self.patients_info["TRANSFUSION_3H"].fillna(0, inplace=True)        
+            pass
         
         elif outcome_mode == "any_procedure":
             self.patients_info.loc[self.patients_info["ProcedureCode_1"].notnull(), ["label"]] = 1
@@ -582,3 +575,33 @@ class TimeSeriesDataset():
         self.trailing_fill(fillmode= fillmode)
         self.remove_short_sequences(limit = 5)
         self.cut(cutoff_col_idx, undersampling= undersampling)
+
+class DTD():
+    def __init__(self):
+        self.colnames= { 
+            "key_name":["JournalID", ],
+            "all_key_names": ["CPR_hash", "JournalID", "dtr_index"],
+            "AIS_names" : ['HEAD_1', 'HEAD_2', 'HEAD_3', 'HEAD_4', 'HEAD_5', 'HEAD_6', 'HEAD_9', 'HEAD_NA', 'FACE_1', 'FACE_2', 'FACE_3', 'FACE_4', 'FACE_5', 'FACE_9', 'FACE_NA', 'NECK_1', 'NECK_2', 'NECK_3', 'NECK_4', 'NECK_5', 'NECK_6', 'NECK_9', 'THORAX_1', 'THORAX_2', 'THORAX_3', 'THORAX_4', 'THORAX_5', 'THORAX_6', 'THORAX_9', 'THORAX_NA', 'ABDOMEN_1', 'ABDOMEN_2', 'ABDOMEN_3', 'ABDOMEN_4', 'ABDOMEN_5', 'ABDOMEN_6', 'ABDOMEN_9', 'ABDOMEN_NA', 'SPINE_1', 'SPINE_2', 'SPINE_3', 'SPINE_4', 'SPINE_5', 'SPINE_6', 'SPINE_9', 'SPINE_NA', 'UPPER_EXT_1', 'UPPER_EXT_2', 'UPPER_EXT_3', 'UPPER_EXT_4', 'UPPER_EXT_5', 'UPPER_EXT_6', 'UPPER_EXT_9', 'UPPER_EXT_NA', 'LOWER_EXT_1', 'LOWER_EXT_2', 'LOWER_EXT_3', 'LOWER_EXT_4', 'LOWER_EXT_5', 'LOWER_EXT_6', 'LOWER_EXT_9', 'LOWER_EXT_NA', 'UNSPEC_1', 'UNSPEC_2', 'UNSPEC_3', 'UNSPEC_4', 'UNSPEC_5', 'UNSPEC_6', 'UNSPEC_9', 'UNSPEC_NA',],
+            "CC_names" :['CC_ADHD', 'CC_ANGINAPECTORIS', 'CC_COPD', 'CC_DIABETES', 'CC_BLEEDING', 'CC_CIRRHOSIS', 'CC_DEMENTIA', 'CC_CVA', 'CC_CHF', 'CC_HYPERTENSION', 'CC_MI', 'CC_PAD', 'CC_MENTALPERSONALITY', 'CC_RENAL', 'CC_SUBSTANCEABUSE', 'CC_ALCOHOLISM', 'CC_SMOKING', 'CC_ANTICOAGULANT', 'CC_CHEMO', 'CC_STEROID', 'CC_HYPERTENSION_MED'],
+            "cat_names" : ['CAUSE','PENETRATION_INJ',],
+            "cont_names":['HEIGHT','WEIGHT',],
+
+            "doubt_names" : [ 'ISS_05',  ],
+            "alt_targets_names": ['TRANSFUSION24H', 'TRANSFUSION4H', 'DECEASED', 'DECEASED_early', 'DECEASED_late', 'alt_DECEASED', 'alt_DECEASED_early', 'alt_DECEASED_late',  'VENTILATION', 'GCSQ_INTUBATED',  'LOS48HOURSPLUS',],
+            }
+        self.colnames_types = {"cat": ["cat_names", "AIS_names", "CC_names", ],
+                               "cont": ["cont_names"]}
+
+        self.df = get_csv("data/interim/dtd.csv")
+    
+    def get_by_colnames(self, colnames:str|list)->pd.DataFrame:
+        if isinstance(colnames, str):
+            keep_cols = self.colnames["key_name"] + self.colnames[colnames]
+        else:            
+            keep_cols = self.colnames["key_name"]
+            for i in colnames:
+                keep_cols = keep_cols+ self.colnames[i]
+            logger.debug(f"keep_cols in DTD class created from list\n{keep_cols}")
+
+        return self.df[keep_cols]
+

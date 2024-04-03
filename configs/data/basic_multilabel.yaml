@@ -1,8 +1,10 @@
 target: 
+ # - rh_major
   - RH_plus_major 
   - neuro_major
   - abdominal_major
   - vascular_major
+ # - thorax_major
 
 seed: 422
 verbose: False
@@ -18,6 +20,11 @@ undersampling: 0.0
 sequential_fillna_mode: zero
 
 upper_seq_limit: 500
+dtd_keep_colnames : 
+  - cat_names
+  - cont_names
+  #- AIS_names
+  #- CC_names
 
 valid_size: 0.2
 test_size: 0.1

@@ -48,9 +48,20 @@ clean:
 data:
 	python $(PROJECT_NAME)/data/make_data.py
 
-## Process raw data into processed data
+## Train
 train:
 	python $(PROJECT_NAME)/train_model.py
+## Save predictions
+save_preds:
+	python $(PROJECT_NAME)/entrypoint.py --save
+## Predict
+eval:
+	python $(PROJECT_NAME)/entrypoint.py --eval
+
+## all (train, save preds, evaluate)
+all: train save_preds eval
+
+
 #################################################################################
 # Documentation RULES                                                           #
 #################################################################################

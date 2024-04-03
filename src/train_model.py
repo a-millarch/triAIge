@@ -123,7 +123,7 @@ def train_main(cfg:DictConfig):
         # Add parameters to Mlflow logging
         log_params={    "max_sequence_length": cfg["data"]["cut_off_col_idx"],
                         "bin_frequency" : cfg["data"]["bin_freq"],
-                        "classes":classes,
+                      #  "classes":classes,
                         "sequential_fillna_mode": cfg["data"]["sequential_fillna_mode"],
 
                         "batch size":cfg["data"]["bs"],
@@ -137,6 +137,8 @@ def train_main(cfg:DictConfig):
                                             }
         for name, var in log_params.items():
             mlflow.log_param(name, var)
+            
+        mlflow.log_params(cfg) # type: ignore
    
         # Plot and log losses from traning cycle
         save_loss_plot(learn, "reports/figures/loss_plot.png")
@@ -151,11 +153,15 @@ def train_main(cfg:DictConfig):
             mlflow.log_metric(f"test_pr_auc_{name}", score)
 
         # Add artifacts to mlflow
-        mlflow.log_artifact("logging/app.log")
-        mlflow.log_artifact('reports/figures/metric_plot.png')
-        mlflow.log_artifact("reports/figures/loss_plot.png")
-        mlflow.log_artifact("models/model.pth")
-        mlflow.log_artifact("models/trained_model_learner.pkl")
+        artifact_paths = [  "logging/app.log",
+                            'reports/figures/metric_plot.png',
+                            "reports/figures/loss_plot.png",
+                            "models/model.pth",
+                            "models/trained_model_learner.pkl"
+                            ]
+        for artifact in artifact_paths:
+            mlflow.log_artifact(artifact)
+     
     
 if __name__=="__main__":
     train_main()

@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np 
 import pickle 
 
-from src.data.datasets import TimeSeriesDataset, TabularDataset, ppjDataset
+from src.data.datasets import TimeSeriesDataset, TabularDataset, ppjDataset, DTD
 from src.custom.tsai_custom import CustomTSMultiLabelClassification
 from src.features.loader import sks_labels
 
@@ -69,7 +69,8 @@ class FusionLoader():
                         bin_freq= cfg["bin_freq"],  # type: ignore
                         fillmode=  cfg["sequential_fillna_mode"],
                         undersampling = cfg["undersampling"],
-                        upper_seq_limit = cfg["upper_seq_limit"])
+                        upper_seq_limit = cfg["upper_seq_limit"],
+                        dtd_keep_colnames = cfg["dtd_keep_colnames"])
         
         self.get_splits_from_dfs()
         self.get_dls()
@@ -100,7 +101,8 @@ class FusionLoader():
                 outcome_creation_mode= "categorical_procedure", 
                 fillmode ="mean",
                 undersampling=0.3,
-                upper_seq_limit = 100
+                upper_seq_limit = 100,
+                dtd_keep_colnames = None
                 ):
         
         """ Collect timeseriesdataset obj and tabulardataset object"""
@@ -122,12 +124,39 @@ class FusionLoader():
         tmp_GCS.rename(columns={"Value":"GCS"}, inplace=True)
         ds_tab.df = ds_tab.df.merge(tmp_GCS[["JournalID", "GCS"]], on ="JournalID", how="left")
 
+
+
         # add age (move this to ppj patient info at some point)
         ds_tab.df["age"] = ((pd.to_datetime(ds_tab.df.ServiceDate) - pd.to_datetime(ds_tab.df.Fødselsdato)).dt.days/365).round(0)
   
         # define columns (should rename in PPJdataset as well)
         keep_cat_cols= ["Køn",]
         keep_cont_cols= ["age", "GCS" ]
+
+        # DTD
+        if dtd_keep_colnames is not None:
+            
+            # Collect DTD and filter by categories of column names
+            dtd = DTD()
+            dtd_df = dtd.get_by_colnames(dtd_keep_colnames) #type: ignore 
+            logger.info(f"Adding DTD info for {len(dtd_df)} trajectories out of {len(ds_tab.df)} trajectories")
+
+            # adjust cont and cat names according to additions from DTD
+            if isinstance(dtd_keep_colnames, str):
+                if dtd_keep_colnames in dtd.colnames_types["cat"]:
+                        keep_cat_cols = keep_cat_cols + dtd.colnames[dtd_keep_colnames]
+                else:
+                    keep_cont_cols = keep_cont_cols + dtd.colnames[dtd_keep_colnames]
+
+            else:
+                for c in dtd_keep_colnames:
+                    if c in dtd.colnames_types["cat"]:
+                        keep_cat_cols = keep_cat_cols + dtd.colnames[c]
+                    elif c in dtd.colnames_types["cont"]:
+                        keep_cont_cols = keep_cont_cols + dtd.colnames[c]
+                    else: pass
+            # merge dataframe onto tab df NOTE: left merge for now        
+            ds_tab.df = ds_tab.df.merge(dtd_df, how='left', on="JournalID")
 
         cat_names=  keep_cat_cols+ds_tab.base.cat_names
         #cat_names = ds_tab.base.cat_names
@@ -143,6 +172,7 @@ class FusionLoader():
 
         # reduce df
         tab_df = ds_tab.df[ keep_cols].copy(deep=True)
+        logger.debug(f"columns: {tab_df.columns}")
         tab_df.drop_duplicates(inplace=True)
         logger.info(f"Tabular dataset length before reducing: {len(tab_df)}")
  # HACKY SHIT
