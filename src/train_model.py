@@ -107,6 +107,7 @@ def train_main(cfg:DictConfig):
                     metrics=[RocAucMulti(average='macro'), RocAucMulti(average=None)], #type: ignore
                     cbs=[smcb]
                         )
+    
     # set learning rate from fastai lr-finder by hpm factor (most often reduced)
     lr = learn.lr_find(show_plot=False).valley * cfg["model"]["lr_factor"]
 
