@@ -70,11 +70,8 @@ def train_main(cfg:DictConfig):
     if cfg.model["weights"]:
         logger.info(f"Using class weights: {ws}")
         loss_func = BCEWithLogitsLossFlat(pos_weight=ws)
-        #loss_func=FocalLoss(alpha = weights)
     else:
         loss_func = BCEWithLogitsLossFlat()
-        #loss_func=LabelSmoothingCrossEntropyFlat(),
-        #loss_func=FocalLoss(alpha = weights),
 
     # Create model
     # https://github.com/timeseriesAI/tsai/blob/main/nbs/066_models.TabFusionTransformer.ipynb
@@ -83,20 +80,11 @@ def train_main(cfg:DictConfig):
     model = TSTabFusionTransformer(f.dls.vars, len(f.target), f.dls.len, classes, f.cont_names, # type: ignore
                                     fc_dropout=cfg["model"]["fc_dropout"],
                                     n_layers = cfg["model"]["n_layers"],
-                                    n_heads = cfg["model"]["n_heads"],
+                                    n_heads = cfg["model"]["n_heads"], # if d_k, d_v, d_ff == None, then derived from d_model and n_heads
                                     d_model=cfg["model"]["d_model"],
                                     res_dropout = cfg["model"]["res_dropout"]
                                     )
-    # if d_k, d_v, d_ff == None, then derived from d_model and n_heads
-
-    alt_model = TabFusionTransformer(classes = classes, 
-                                 cont_names = f.cont_names, 
-                                 c_out= len(f.target),  # type: ignore
-                                fc_dropout=cfg["model"]["fc_dropout"],
-                                n_layers = cfg["model"]["n_layers"],
-                                n_heads = cfg["model"]["n_heads"],
-                                d_model=cfg["model"]["d_model"],
-                                )
+    
     # Create learner
     #escb = EarlyStoppingCallback(monitor='valid_loss', patience=3)
     smcb =SaveModel(monitor="valid_loss", fname = "model", 
@@ -125,7 +113,6 @@ def train_main(cfg:DictConfig):
         # Add parameters to Mlflow logging
         log_params={    "max_sequence_length": cfg["data"]["cut_off_col_idx"],
                         "bin_frequency" : cfg["data"]["bin_freq"],
-                      #  "classes":classes,
                         "sequential_fillna_mode": cfg["data"]["sequential_fillna_mode"],
 
                         "batch size":cfg["data"]["bs"],

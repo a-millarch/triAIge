@@ -17,6 +17,7 @@ def construct_patients_info_df_sp(drop_CPR =True, drop_JID_duplicates =True, sp_
 
     ppj = pickle_loader ("cpr_df.pkl")
     sp_path = p.joinpath("data/raw/"+sp_file_name+".csv")
+    logger.info(f'Reading file: {sp_path}')
     sp = pd.read_csv(sp_path, sep =";", encoding="UTF8")
     try: 
         sp.drop(columns="Unnamed: 0", inplace=True)

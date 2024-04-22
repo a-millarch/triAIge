@@ -1,0 +1,33 @@
+;;Missing;Overall
+n;;;4578
+Any major surgery, n (%);0;0;4130 (90.2)
+Any major surgery, n (%);1;;448 (9.8)
+Major neurosurgery, n (%);0;0;4440 (97.0)
+Major neurosurgery, n (%);1;;138 (3.0)
+Major abdominal surgery, n (%);0;0;4473 (97.7)
+Major abdominal surgery, n (%);1;;105 (2.3)
+Major vascular surgery, n (%);0;0;4541 (99.2)
+Major vascular surgery, n (%);1;;37 (0.8)
+Sex, n (%);Female;0;1538 (33.6)
+Sex, n (%);Male;;3040 (66.4)
+A: Airway, n (%);Clear;354;3992 (94.5)
+A: Airway, n (%);Threatened;;208 (4.9)
+A: Airway, n (%);Blocked;;24 (0.6)
+B: Breathing, n (%);Normal;352;3410 (80.7)
+B: Breathing, n (%);Very affected;;171 (4.0)
+B: Breathing, n (%);Lightly affected;;601 (14.2)
+B: Breathing, n (%);Respiratory arrest (ceased);;44 (1.0)
+C: Circulation, n (%);Normal;349;3403 (80.5)
+C: Circulation, n (%);Lightly affected;;629 (14.9)
+C: Circulation, n (%);Very affected;;150 (3.5)
+C: Circulation, n (%);Cardiac arrest;;45 (1.1)
+C: Circulation, n (%);0.0;;2 (0.0)
+D: Disability, n (%);Awake;361;3259 (77.3)
+D: Disability, n (%);Reduced awareness;;714 (16.9)
+D: Disability, n (%);Bevidstløs;;244 (5.8)
+Age, median [Q1,Q3];;0;43.0 [24.0,61.0]
+Glasgow Coma Score, median [Q1,Q3];;563;15.0 [14.0,15.0]
+Oxygen saturation, median [Q1,Q3];;26;98.0 [96.0,99.0]
+Heart rate, median [Q1,Q3];;5;87.0 [75.0,100.0]
+Systolic blood pressure, median [Q1,Q3];;98;129.0 [114.5,146.0]
+Diastolic blood pressure, median [Q1,Q3];;100;77.0 [68.0,86.0]

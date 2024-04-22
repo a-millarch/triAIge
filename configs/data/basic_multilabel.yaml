@@ -1,14 +1,17 @@
 target: 
   - any_major
+  #- exp_any_major
+  #- curated_any_major
   - neuro_major
   - abdominal_major
   - vascular_major
+
 seed: 422
 verbose: False
 
 patients_info_file_name: patients_info
 ppj_file_name: ppj
-base_file_name: patients_info
+base_file_name: patients_info_12h
 outcome_creation_mode: "categorical_procedure"
 
 cut_off_col_idx: 20

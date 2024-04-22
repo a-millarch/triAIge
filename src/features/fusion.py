@@ -181,7 +181,9 @@ class FusionLoader():
         logger.info(f"Tabular dataset length before reducing: {len(tab_df)}")
  # HACKY SHIT
         tab_df.loc[0, self.cont_names+ self.cat_names] = np.nan
+        # 3, 90
         tab_df = tab_df[(tab_df.age.notnull())& (tab_df.age.between(3,90, inclusive="both")) &  (tab_df.Køn.notnull())]
+        #tab_df["age"].fillna(64, inplace=True)
         #tab_df = tab_df[tab_df.]
         #tab_df = tab_df[(tab_df.age.notnull())&  (tab_df.Køn.notnull())]
 # END
@@ -268,7 +270,8 @@ class FusionLoader():
 
         #batch_tfms=TSNormalize(by_var=True, range=(0,1))
             
-        batch_tfms=TSStandardize(by_var=True, verbose=True)
+        #batch_tfms=TSStandardize(by_var=True, verbose=True)
+        batch_tfms =TSNormalize(by_var=True, range=(-1,1))
 
         ts_dls = get_ts_dls(self.X, self.y, splits=self.splits, tfms=tfms, batch_tfms=batch_tfms)
 
@@ -302,8 +305,8 @@ class FusionLoader():
             tfms  = [None, [Categorize()]]
 
         
-        batch_tfms=TSStandardize(by_var=True, verbose=True)
-        #batch_tfms =TSNormalize(by_var=True, range=(0,1))
+        #batch_tfms=TSStandardize(by_var=True, verbose=True)
+        batch_tfms =TSNormalize(by_var=True, range=(-1,1))
         
         #test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=TSStandardize(by_var=True))
         self.test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=batch_tfms)
