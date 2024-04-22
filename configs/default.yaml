@@ -1,6 +1,85 @@
 defaults:
-    - data: basic_multilabel
-    - model: tabfusion
-    - experiment: experiment
-    - evaluation: eval
-    
+  - override hydra/sweeper: optuna
+
+data:
+    target: 
+    - any_major
+    #- exp_any_major
+    #- curated_any_major
+    - neuro_major
+    - abdominal_major
+    - vascular_major
+
+    seed: 422
+    verbose: False
+
+    patients_info_file_name: patients_info
+    ppj_file_name: ppj
+    base_file_name: patients_info_12h
+    outcome_creation_mode: "categorical_procedure"
+
+    cut_off_col_idx: 20
+    bin_freq: "30S"
+    undersampling: 0.0
+    sequential_fillna_mode: zero
+
+    upper_seq_limit: 500
+    min_seq_len: 5
+
+    valid_size: 0.2
+    test_size: 0.1
+
+    bs: 256
+
+    dtd_keep_colnames : 
+    #- cat_names
+    #- cont_names
+    #- AIS_names
+    #- CC_names
+
+model:
+    fc_dropout: 0.7
+    n_layers: 6
+    n_heads: 8
+
+    d_model: 64
+    d_k: None
+    d_v: None
+    d_ff: None
+
+    res_dropout: 0.4
+
+    n_epochs: 15
+    lr_factor: 1.0
+
+    weights: True 
+    weights_factor: 0.1
+
+experiment:
+    run_name: code_change(non exclusion criteria)
+    name: gridsearch
+    note: 
+    show_plots: False
+
+evaluation:
+    mode : "f_beta"
+    beta : 3
+    offset: 0.0
+
+hydra:
+  sweeper:
+    sampler:
+      seed: 123
+    direction: maximize
+    study_name: train_model
+    storage: null
+    n_trials: 5
+    n_jobs: 1
+    params:
+      data.bs: choice(128,256,512)
+      data.undersampling: range(0.0,0.3, step=0.1)
+
+      model.fc_dropout: range(0.0, 0.9, step=0.1)
+      model.res_dropout: range(0.0, 0.9, step=0.1)
+      model.n_layers: choice(2,6,8,10)
+      model.n_heads: choice(2,8,16)

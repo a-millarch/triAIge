@@ -133,7 +133,8 @@ def train_main(cfg:DictConfig):
         save_loss_plot(learn, "reports/figures/loss_plot.png")
 
         # Evaluate on test dataset and log metrics
-        rauc, prauc = multilabel_roc_pr_analysis_and_plot(learn, f.target, dl=f.test_mixed_dls.valid)  #type: ignore
+        rauc, prauc = multilabel_roc_pr_analysis_and_plot(learn, f.target, dl=f.test_mixed_dls.valid, #type: ignore
+                                                          show=cfg["experiment"]["show_plots"])  
 
         for name, score in zip(f.target, rauc):#type: ignore
             mlflow.log_metric(f"test_roc_auc_{name}", score)
@@ -150,6 +151,8 @@ def train_main(cfg:DictConfig):
                             ]
         for artifact in artifact_paths:
             mlflow.log_artifact(artifact)
+
+    return rauc[0]
      
     
 if __name__=="__main__":
