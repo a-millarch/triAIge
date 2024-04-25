@@ -1,3 +1,4 @@
-run_name: code_change(non exclusion criteria)
-name: study
-note: 
+run_name: optuna run
+name: grid8
+note: using batch norm (-1,1), updated labels, max 5 min data
+show_plots: False

@@ -71,7 +71,8 @@ class FusionLoader():
                         undersampling = cfg["undersampling"],
                         upper_seq_limit = cfg["upper_seq_limit"],
                         dtd_keep_colnames = cfg["dtd_keep_colnames"],
-                        min_seq_len = cfg["min_seq_len"])
+                        min_seq_len = cfg["min_seq_len"],
+                        bin_operation=cfg["bin_operation"])
         
         self.get_splits_from_dfs()
         self.get_dls()
@@ -105,6 +106,7 @@ class FusionLoader():
                 upper_seq_limit = 100,
                 dtd_keep_colnames = None,
                 min_seq_len = 5,
+                bin_operation ="max",
                 ):
         
         """ Collect timeseriesdataset obj and tabulardataset object"""
@@ -118,6 +120,7 @@ class FusionLoader():
         ds.compute(cutoff_col_idx=cut_off_col_idx, 
                    undersampling=undersampling, 
                    bin_freq=bin_freq, 
+                   bin_operation=bin_operation,
                    fillmode = fillmode,
                    upper_seq_limit = upper_seq_limit,
                    min_seq_len = min_seq_len)
@@ -180,12 +183,13 @@ class FusionLoader():
         tab_df.drop_duplicates(inplace=True)
         logger.info(f"Tabular dataset length before reducing: {len(tab_df)}")
  # HACKY SHIT
-        tab_df.loc[0, self.cont_names+ self.cat_names] = np.nan
+        tab_df.loc[0, self.cont_names+ self.cat_names] = np.nan #type ignore
+        #tab_df = tab_df[(tab_df.age.notnull())&  (tab_df.Køn.notnull())]
         # 3, 90
         tab_df = tab_df[(tab_df.age.notnull())& (tab_df.age.between(3,90, inclusive="both")) &  (tab_df.Køn.notnull())]
         #tab_df["age"].fillna(64, inplace=True)
         #tab_df = tab_df[tab_df.]
-        #tab_df = tab_df[(tab_df.age.notnull())&  (tab_df.Køn.notnull())]
+        
 # END
 
         # reduce patient mapping and merge

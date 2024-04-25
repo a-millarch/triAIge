@@ -100,8 +100,8 @@ def train_main(cfg:DictConfig):
     lr = learn.lr_find(show_plot=False).valley * cfg["model"]["lr_factor"]
 
     # Prepare for training cycle
-    mlflow.set_experiment(cfg.experiment["name"])
-    with mlflow.start_run(run_name=cfg.experiment["run_name"]) as run:
+    mlflow.set_experiment(cfg.experiment["name"] )
+    with mlflow.start_run(run_name=cfg.experiment["run_name"], tags = {"note":cfg.experiment["note"]}) as run:
         start = time.time()
         
         learn.fit_one_cycle(cfg["model"]["n_epochs"], lr_max=lr)
@@ -127,14 +127,16 @@ def train_main(cfg:DictConfig):
         for name, var in log_params.items():
             mlflow.log_param(name, var)
             
-        mlflow.log_params(cfg) # type: ignore
+        mlflow.log_params(cfg["data"]) # type: ignore
+        mlflow.log_params(cfg["model"]) # type: ignore
+     
    
         # Plot and log losses from traning cycle
         save_loss_plot(learn, "reports/figures/loss_plot.png")
 
         # Evaluate on test dataset and log metrics
         rauc, prauc = multilabel_roc_pr_analysis_and_plot(learn, f.target, dl=f.test_mixed_dls.valid, #type: ignore
-                                                          show=cfg["experiment"]["show_plots"])  
+                                                          save_path='reports/figures/test_metric_plot.png', show=cfg["experiment"]["show_plots"])  
 
         for name, score in zip(f.target, rauc):#type: ignore
             mlflow.log_metric(f"test_roc_auc_{name}", score)
@@ -142,9 +144,13 @@ def train_main(cfg:DictConfig):
         for name, score in zip(f.target, prauc):#type: ignore
             mlflow.log_metric(f"test_pr_auc_{name}", score)
 
+        # Get validation plot
+        _, _ = multilabel_roc_pr_analysis_and_plot(learn, f.target, dl=None, #type: ignore - if none, then using validation set
+                                                          save_path='reports/figures/valid_metric_plot.png', show=cfg["experiment"]["show_plots"]) 
         # Add artifacts to mlflow
         artifact_paths = [  "logging/app.log",
-                            'reports/figures/metric_plot.png',
+                            'reports/figures/test_metric_plot.png',
+                            'reports/figures/valid_metric_plot.png',
                             "reports/figures/loss_plot.png",
                             "models/model.pth",
                             "models/trained_model_learner.pkl"
@@ -152,7 +158,8 @@ def train_main(cfg:DictConfig):
         for artifact in artifact_paths:
             mlflow.log_artifact(artifact)
 
-    return rauc[0]
+    return rauc[0] #test roc_auc for any 
+    #return learn.final_record[2][0]
      
     
 if __name__=="__main__":

@@ -62,7 +62,7 @@ def multilabel_roc_analysis_and_plot(learn, target_names:list, dl=None):
 
     return roc_auc
 
-def multilabel_roc_pr_analysis_and_plot(learn, target_names:list, dl=None, show=True):
+def multilabel_roc_pr_analysis_and_plot(learn, target_names:list, dl=None, show=True, save_path='reports/figures/metric_plot.png'):
     """
     Perform ROC curve and Precision-Recall curve analysis for multilabel classification using fastai and sklearn.
     Plot ROC and Precision-Recall curves for each class in a subplot.
@@ -145,9 +145,12 @@ def multilabel_roc_pr_analysis_and_plot(learn, target_names:list, dl=None, show=
     # Show plots
     #plt.tight_layout()
     
-    plt.savefig("reports/figures/metric_plot.png")
+    plt.savefig(save_path)
     if show:
         plt.show()
+    else:
+        #plt.show() # a tad silly, but otherwise messes up with saving former fig
+        plt.close()
 
     return roc_auc, pr_auc
 

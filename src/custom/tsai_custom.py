@@ -3,14 +3,14 @@ from fastai.callback.all import *
 from fastcore.foundation import L 
 
 def save_loss_plot(learn, save_path:str):
-	skip_start = 5
-	plt.plot(list(range(skip_start, len(learn.recorder.losses))), learn.recorder.losses[skip_start:], label='train')
-	idx = (np.array(learn.recorder.iters)<skip_start).sum()
-	valid_col = learn.recorder.metric_names.index('valid_loss') - 1 
-	plt.plot(learn.recorder.iters[idx:], L(learn.recorder.values[idx:]).itemgot(valid_col), label='valid')
-	plt.legend()
-	plt.savefig(save_path)
-
+    skip_start = 5
+    plt.plot(list(range(skip_start, len(learn.recorder.losses))), learn.recorder.losses[skip_start:], label='train')
+    idx = (np.array(learn.recorder.iters)<skip_start).sum()
+    valid_col = learn.recorder.metric_names.index('valid_loss') - 1 
+    plt.plot(learn.recorder.iters[idx:], L(learn.recorder.values[idx:]).itemgot(valid_col), label='valid') #type: ignore
+    plt.legend()
+    plt.savefig(save_path)
+    plt.close()
 
 class CustomTSMultiLabelClassification(Categorize):
     "Reversible combined transform of multi-category strings to one-hot encoded `vocab` id"
@@ -43,8 +43,8 @@ class TrainingShowGraph(Callback):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
         if not(self.run): return
         self.nb_batches = []
-        self.learn.recorder.loss_idxs = [i for i,n in enumerate(self.learn.recorder.metric_names[1:-1]) if 'loss' in n]
-        _metrics_info = [(i,n) for i,n in enumerate(self.learn.recorder.metric_names[1:-1]) if 'loss' not in n]
+        self.learn.recorder.loss_idxs = [i for i,n in enumerate(self.learn.recorder.metric_names[1:-1]) if 'loss' in n] #type: ignore
+        _metrics_info = [(i,n) for i,n in enumerate(self.learn.recorder.metric_names[1:-1]) if 'loss' not in n] #type: ignore
 
         if len(_metrics_info) > 0: 
             self.metrics_idxs, self.metrics_names = list(zip(*_metrics_info))
@@ -58,15 +58,15 @@ class TrainingShowGraph(Callback):
  
         "Plot validation loss in the pbar graph"
         if not self.nb_batches: return
-        rec = self.learn.recorder
+        rec = self.learn.recorder #type: ignore
         if self.epoch == 0:
             self.rec_start = len(rec.losses)
         iters = range_of(rec.losses)
         all_losses = rec.losses if self.epoch == 0 else rec.losses[self.rec_start-1:]
 
-        modified_recorder_values = [sublist[:-1] for sublist in self.learn.recorder.values]
+        modified_recorder_values = [sublist[:-1] for sublist in self.learn.recorder.values] #type: ignore
         
-        val_losses = np.stack(modified_recorder_values)[:, self.learn.recorder.loss_idxs[-1]].tolist()
+        val_losses = np.stack(modified_recorder_values)[:, self.learn.recorder.loss_idxs[-1]].tolist() #type: ignore
         if rec.valid_metrics and val_losses[0] is not None:
             all_losses = all_losses + val_losses
         else:
@@ -81,12 +81,12 @@ class TrainingShowGraph(Callback):
         if hasattr(self, 'graph_ax'):
             plt.close(self.graph_ax.figure)
         if self.plot_metrics: 
-            self.learn.plot_metrics(final_losses=self.final_losses, perc=self.perc)
-
+            self.learn.plot_metrics(final_losses=self.final_losses, perc=self.perc) #type: ignore
+ 
     def update_graph(self, graphs, x_bounds=None, y_bounds=None, figsize=(6,4)):
         if not hasattr(self, 'graph_fig'):
-            self.graph_fig, self.graph_ax = plt.subplots(1, figsize=figsize)
-            self.graph_out = display(self.graph_ax.figure, display_id=True)
+            self.graph_fig, self.graph_ax = plt.subplots(1, figsize=figsize) 
+            self.graph_out = display(self.graph_ax.figure, display_id=True) #type: ignore
         self.graph_ax.clear()
         if len(self.names) < len(graphs): self.names += [''] * (len(graphs) - len(self.names))
         for g,n in zip(graphs,self.names): 

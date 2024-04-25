@@ -157,7 +157,7 @@ class ppjDataset():
             pass
         
         elif outcome_mode == "any_procedure":
-            self.patients_info.loc[self.patients_info["ProcedureCode_1"].notnull(), ["label"]] = 1
+            self.patients_info.loc[self.patients_info["ProcedureCode_1"].notnull(), ["label"]] = 1 #type: ignore
             self.patients_info["label"].fillna(0,inplace=True)
 
         elif outcome_mode == "categorical_procedure":
@@ -378,7 +378,7 @@ class TimeSeriesDataset():
         logger.info(f"Removed {len(self.long_sequence_ids)} journalIDs due to sequences length above limit")
 
 
-    def bin_sequential_data(self, bin_freq = "1Min", keep_creation_time = False):
+    def bin_sequential_data(self, bin_freq = "1Min", keep_creation_time = False, bin_operation="max"):
         """ 
         """
         logger.info(f"Initialing sequential binning using {bin_freq} bins")
@@ -396,8 +396,15 @@ class TimeSeriesDataset():
             # Group by ID and create 2-minute bins for DateTime
 
             logger.debug(f"binning {df_name}")
-            df_grouped = df.groupby([id_col, pd.Grouper(key=datetime_col, freq=bin_freq)])['Value'].max().reset_index()
-            
+            if bin_operation == "max":
+                df_grouped = df.groupby([id_col, pd.Grouper(key=datetime_col, freq=bin_freq)])['Value'].max().reset_index()
+
+            elif bin_operation == "min":
+                df_grouped = df.groupby([id_col, pd.Grouper(key=datetime_col, freq=bin_freq)])['Value'].min().reset_index()     
+
+            if bin_operation == "mean":
+                df_grouped = df.groupby([id_col, pd.Grouper(key=datetime_col, freq=bin_freq)])['Value'].mean().reset_index()
+
             # Rename the 'Value' column with a suffix based on the dataframe name
             df_grouped = df_grouped.rename(columns={'Value': f'Value_{df_name}'})
             
@@ -468,9 +475,10 @@ class TimeSeriesDataset():
 
     def construct_df(self, 
                      bin_freq = "30S",
+                     bin_operation = "max",
                      verbose=False ):
         
-        self.bin_sequential_data(bin_freq)
+        self.bin_sequential_data(bin_freq=bin_freq, bin_operation=bin_operation)
         self.df_to_long_df()
         self.mp = show_missing_per_col(self.df_dict["puls"].drop(columns=["sample", "feature"]))
         #logger.info("\n\ndefine cutoff (cutoff_col_idx) for missing values, using TimeSeriesDataset.cut(n_cols= cutoff_col_idx)")
@@ -579,11 +587,13 @@ class TimeSeriesDataset():
                 fillmode = "trailingzero", 
                 upper_seq_limit=100,
                 min_seq_len = 5,
+                bin_freq= '30S',
+                bin_operation="max",
                 **kwargs ):
         self.specify_sequential_features()
         self.reduce_population_by_sequential_length(upper_seq_limit=upper_seq_limit)
 
-        self.construct_df(**kwargs) # bins, transform to long, creates missing overview (self.mp)
+        self.construct_df(bin_freq=bin_freq, bin_operation=bin_operation) # bins, transform to long, creates missing overview (self.mp)
 
         self.trailing_fill(fillmode= fillmode, limit =cutoff_col_idx)
         self.remove_short_sequences(limit = min_seq_len)

@@ -51,6 +51,9 @@ data:
 ## Train
 train:
 	python $(PROJECT_NAME)/train_model.py
+multirun:
+	python $(PROJECT_NAME)/train_model.py --multirun
+	
 ## Save predictions
 save_preds:
 	python $(PROJECT_NAME)/entrypoint.py --save
