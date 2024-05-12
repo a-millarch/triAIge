@@ -16,7 +16,8 @@ hydra:
     n_jobs: 1
     params:
       data.bs: choice(256,512)
-      data.min_seq_len: range(1,10, step=1)
+      data.seed: choice(42,422,9,22)
+      #data.min_seq_len: range(1,10, step=1)
       #data.undersampling: range(0.0,0.3, step=0.1)
       #data.cut_off_col_idx: choice(10, 20)
       #data.bin_freq: choice("30S", "1Min")

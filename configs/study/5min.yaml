@@ -1,0 +1,58 @@
+experiment:
+  run_name: study 5 min
+  name: study5
+  note: final model
+  show_plots: False
+
+data:
+  target: 
+    - any_major
+    - neuro_major
+    - abdominal_major
+    - vascular_major
+
+  seed: 422
+  verbose: False
+
+  patients_info_file_name: patients_info
+  ppj_file_name: ppj
+  base_file_name: patients_info_12h
+  outcome_creation_mode: "categorical_procedure"
+
+  cut_off_col_idx: 10
+  bin_freq: "30S"
+  bin_operation: max
+  undersampling: 0.0
+  sequential_fillna_mode: zero
+
+  upper_seq_limit: 500
+  min_seq_len: 5
+
+  valid_size: 0.2
+  test_size: 0.1
+
+  bs: 256
+  
+  dtd_keep_colnames : 
+  #- cat_names
+  #- cont_names
+  #- AIS_names
+  #- CC_names
+
+model:
+  fc_dropout: 0.3
+  n_layers: 6
+  n_heads: 4
+
+  d_model: 64
+  d_k: None
+  d_v: None
+  d_ff: None
+
+  res_dropout: 0.4
+
+  n_epochs: 150
+  lr_factor: 0.5
+
+  weights: False
+  weights_factor: 1.0

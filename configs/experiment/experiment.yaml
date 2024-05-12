@@ -1,4 +1,4 @@
 run_name: optuna run
-name: grid8
-note: using batch norm (-1,1), updated labels, max 5 min data
+name: grid-10min_30S
+note: using batch norm (-1,1), updated labels, max 10 min data fixed
 show_plots: False
