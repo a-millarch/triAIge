@@ -179,14 +179,19 @@ cython_debug/
 # data, models, run logs
 data/raw/*
 !data/raw/.gitkeep
+
 data/interim/*
 !data/interim/.gitkeep
+
 data/processed/*
 !data/processed/.gitkeep
+
 data/data_dumps/*
 !data/data_dumps/.gitkeep
+
 data/reports/*
 !data/reports/.gitkeep
+
 models/*
 mlruns/*
 /notebooks
@@ -196,7 +201,6 @@ mlruns/*
 logging/*
 !logging/.gitkeep
 !logging/archive/.gitkeep
-
 
 /multirun
 
