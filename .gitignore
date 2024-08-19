@@ -177,24 +177,37 @@ cython_debug/
 #.idea/
 
 # data, models, run logs
-/data
-/models
-/mlruns
+data/raw/*
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/data_dumps/*
+!data/data_dumps/.gitkeep
+data/reports/*
+!data/reports/.gitkeep
+models/*
+mlruns/*
 /notebooks
 /outputs
 /reports/figures
-/logging
+
+logging/*
+!logging/.gitkeep
+!logging/archive/.gitkeep
+
+
 /multirun
-/dockerfiles
 
 /docs
 /dockerfiles
 
-/mlruns
+mlruns/*
+!mlruns/.gitkeep
 
-/reports/tables/*
+reports/tables/*
 !reports/tables/.gitkeep
 
-!mlruns/.gitkeep
-!logging/.gitkeep
-!logging/archive/.gitkeep
+
+
