@@ -9,7 +9,7 @@ This package is build for Danish pre-hospital data where the expected raw format
 
 | EventCodeName | CreationTime | ValueFloat | ValueString | ValueDateTime | ValueBool | JournalID |
 |:-|-:|-:|:-|-:|-:|-:|
-| OMI00002 | 2019-05-31 15:23:11.000000 | NaN | 102.0 | NaN | NaN | NaN | 0124FKSK-2311-45AF-0093-342BDA3FA | 
+| OMI00002 | 2019-05-31 15:23:11.000000 | NaN | 102.0 | NaN | NaN | 0124FKSK-2311-45AF-0093-342BDA3FA | 
 |...|...|...|...|...|...|...|
 
 ### Data availability statement
