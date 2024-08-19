@@ -185,3 +185,16 @@ cython_debug/
 /reports/figures
 /logging
 /multirun
+/dockerfiles
+
+/docs
+/dockerfiles
+
+/mlruns
+
+/reports/tables/*
+!reports/tables/.gitkeep
+
+!mlruns/.gitkeep
+!logging/.gitkeep
+!logging/archive/.gitkeep
