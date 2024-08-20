@@ -235,10 +235,10 @@ class FusionLoader():
         """
         target = self.target
         if self.multilabel:
-            ts_splits = get_splits(np.array([l[0] for l in self.y]) , valid_size=self.cfg["valid_size"], test_size=self.cfg["test_size"]  ,stratify=True, random_state=self.cfg["seed"], shuffle=True, check_splits= True, show_plot=self.v)
+            ts_splits = get_splits(np.array([l[0] for l in self.y]) , valid_size=self.cfg["valid_size"], test_size=self.cfg["test_size"]  ,stratify=True, random_state=self.cfg["seed"], shuffle=False, check_splits= True, show_plot=self.v)
 
         else:
-            ts_splits = get_splits(self.y, valid_size=self.cfg["valid_size"], test_size=self.cfg["test_size"]  ,stratify=True, random_state=self.cfg["seed"], shuffle=True, check_splits= True, show_plot=self.v)
+            ts_splits = get_splits(self.y, valid_size=self.cfg["valid_size"], test_size=self.cfg["test_size"]  ,stratify=True, random_state=self.cfg["seed"], shuffle=False, check_splits= True, show_plot=self.v)
 
         logger.info(f"{len(self.full_tab_df['sample'].unique())} trajectories in total with {self.full_tab_df[target].sum()} positive outcomes")
         
@@ -264,7 +264,8 @@ class FusionLoader():
         tab_dls = get_tabular_dls(self.tdf, procs=procs, 
                                   cat_names=self.cat_names.copy(), cont_names=self.cont_names.copy(), 
                                   y_names= self.target, 
-                                  splits= self.splits)
+                                  splits= self.splits,
+                                  shuffle=False)
         
         if self.multilabel:
             tfms  = [None, CustomTSMultiLabelClassification()]
@@ -277,9 +278,10 @@ class FusionLoader():
         #batch_tfms=TSStandardize(by_var=True, verbose=True)
         batch_tfms =TSNormalize(by_var=True, range=(-1,1))
 
-        ts_dls = get_ts_dls(self.X, self.y, splits=self.splits, tfms=tfms, batch_tfms=batch_tfms)
+        ts_dls = get_ts_dls(self.X, self.y, splits=self.splits, tfms=tfms, batch_tfms=batch_tfms
+                            ,shuffle=False)
 
-        mixed_dls = get_mixed_dls( ts_dls, tab_dls, bs=self.cfg["bs"])
+        mixed_dls = get_mixed_dls( ts_dls, tab_dls, bs=self.cfg["bs"], shuffle_valid=False)
         #if self.v:
         #    mixed_dls.show_batch()
 
@@ -299,6 +301,7 @@ class FusionLoader():
                                         , cont_names=self.cont_names.copy()
                                         , y_names= self.target
                                         , splits= self.test_splits
+                                        ,shuffle=False
                                     )
         
                 # ts dataloader
@@ -313,6 +316,6 @@ class FusionLoader():
         batch_tfms =TSNormalize(by_var=True, range=(-1,1))
         
         #test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=TSStandardize(by_var=True))
-        self.test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=batch_tfms)
+        self.test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=batch_tfms, shuffle=False)
         # mix
-        self.test_mixed_dls = get_mixed_dls( self.test_ts_dls, self.test_tab_dls)
+        self.test_mixed_dls = get_mixed_dls( self.test_ts_dls, self.test_tab_dls, shuffle_valid=False)
