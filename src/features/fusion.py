@@ -264,8 +264,8 @@ class FusionLoader():
         tab_dls = get_tabular_dls(self.tdf, procs=procs, 
                                   cat_names=self.cat_names.copy(), cont_names=self.cont_names.copy(), 
                                   y_names= self.target, 
-                                  splits= self.splits,
-                                  shuffle=False)
+                                  splits= self.splits,)
+                                  #shuffle=True) # shuffle ok in non test
         
         if self.multilabel:
             tfms  = [None, CustomTSMultiLabelClassification()]
@@ -278,10 +278,10 @@ class FusionLoader():
         #batch_tfms=TSStandardize(by_var=True, verbose=True)
         batch_tfms =TSNormalize(by_var=True, range=(-1,1))
 
-        ts_dls = get_ts_dls(self.X, self.y, splits=self.splits, tfms=tfms, batch_tfms=batch_tfms
-                            ,shuffle=False)
+        ts_dls = get_ts_dls(self.X, self.y, splits=self.splits, tfms=tfms, batch_tfms=batch_tfms)
+                           # ,shuffle=True)
 
-        mixed_dls = get_mixed_dls( ts_dls, tab_dls, bs=self.cfg["bs"], shuffle_valid=False)
+        mixed_dls = get_mixed_dls( ts_dls, tab_dls, bs=self.cfg["bs"])#, shuffle_valid=True)
         #if self.v:
         #    mixed_dls.show_batch()
 
@@ -313,7 +313,8 @@ class FusionLoader():
 
         
         #batch_tfms=TSStandardize(by_var=True, verbose=True)
-        batch_tfms =TSNormalize(by_var=True, range=(-1,1))
+        #batch_tfms =TSNormalize(by_var=True, range=(-1,1))
+        batch_tfms = None
         
         #test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=TSStandardize(by_var=True))
         self.test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=batch_tfms, shuffle=False)

@@ -1,4 +1,4 @@
-run_name: optuna run
-name: grid-10min_30S
+run_name: optuna sweep
+name: r2-grid-5min
 note: using batch norm (-1,1), updated labels, max 10 min data fixed
 show_plots: False
