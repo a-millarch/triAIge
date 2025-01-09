@@ -177,6 +177,7 @@ cython_debug/
 #.idea/
 
 # data, models, run logs
+data/export
 data/raw/*
 !data/raw/.gitkeep
 
@@ -212,6 +213,8 @@ mlruns/*
 
 reports/tables/*
 !reports/tables/.gitkeep
+
+reports/preds
 
 
 

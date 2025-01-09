@@ -277,6 +277,7 @@ class FusionLoader():
             
         #batch_tfms=TSStandardize(by_var=True, verbose=True)
         batch_tfms =TSNormalize(by_var=True, range=(-1,1))
+       # batch_tfms =None 
 
         ts_dls = get_ts_dls(self.X, self.y, splits=self.splits, tfms=tfms, batch_tfms=batch_tfms)
                            # ,shuffle=True)
@@ -313,10 +314,14 @@ class FusionLoader():
 
         
         #batch_tfms=TSStandardize(by_var=True, verbose=True)
-        #batch_tfms =TSNormalize(by_var=True, range=(-1,1))
-        batch_tfms = None
-        
+        batch_tfms =TSNormalize(by_var=True, range=(-1,1))
+        #batch_tfms =None 
+
         #test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=TSStandardize(by_var=True))
-        self.test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=batch_tfms, shuffle=False)
+        self.test_ts_dls = get_ts_dls(self.X, self.y, splits=self.test_splits, tfms=tfms, batch_tfms=batch_tfms
+                                      , shuffle=False
+                                      )
         # mix
-        self.test_mixed_dls = get_mixed_dls( self.test_ts_dls, self.test_tab_dls, shuffle_valid=False)
+        self.test_mixed_dls = get_mixed_dls( self.test_ts_dls, self.test_tab_dls
+                                            , shuffle_valid=False
+                                            )

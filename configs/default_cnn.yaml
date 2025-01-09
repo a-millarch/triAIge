@@ -1,7 +1,7 @@
 defaults:
   - data: basic_multilabel
   - model: tabfusion
-  - experiment: experiment
+  - experiment: cnn
   - evaluation: eval
   - override hydra/sweeper: optuna
     

@@ -1,0 +1,4 @@
+run_name: cnn_5_min
+name: BJS
+note: using batch norm (-1,1), updated labels, max 10 min data fixed
+show_plots: False
